@@ -16,7 +16,7 @@ from datetime import datetime
 def HandleHierarchyId(v):
     return str(v)
 
-server = 'DESKTOP-D91E6UV\SQLEXPRESS' 
+server = 'servername' 
 database = 'AdventureWorks2019' 
 cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' \
                       +server+';DATABASE='+database+';TRUSTED_CONNECTION=yes')
