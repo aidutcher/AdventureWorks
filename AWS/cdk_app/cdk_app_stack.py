@@ -7,13 +7,6 @@ class CdkAppStack(cdk.Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # The code that defines your stack goes here
-
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "CdkAppQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
 
         bucket = s3.Bucket(self, "test-aw-database-snapshots", 
             versioned=True,
