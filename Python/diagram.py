@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Generates architecture diagram for AWS Glue Workflow based on AWS blog post below
+https://aws.amazon.com/blogs/architecture/field-notes-how-to-build-an-aws-glue-workflow-using-the-aws-cloud-development-kit/
+
+Includes dev, test, and prod clusters. Doesn't currently include Secrets Manager
+
 Created on Tue Mar 22 20:16:41 2022
 
 @author: aidut
@@ -9,19 +14,23 @@ import os
 from diagrams import Cluster, Diagram
 from diagrams.aws.storage import S3
 from diagrams.aws.analytics import Glue, GlueCrawlers, GlueDataCatalog, Redshift
-
-os.environ["PATH"] += os.pathsep + 'D:/Program Files (x86)/Graphviz2.38/bin/'
-
 from diagrams.onprem.database import MSSQL
+
+# diagrams is dependent on Graphviz.  Needed to install Graphviz via executable https://stackoverflow.com/a/44005139
+# Needed to add Graphviz to PATH https://stackoverflow.com/a/44625895
+os.environ["PATH"] += os.pathsep + 'D:/Program Files (x86)/Graphviz2.38/bin/'
 
 with Diagram("AW Data Pipeline", filename = "aw_data_pipeline_diagram"):
     
+    # Data is sent to S3 bucket from on-prem MS SQL Server
     sql_server = MSSQL("SQL Server")
 
     with Cluster("Pipelines"):
 
-        raw = S3("raw")
+        raw = S3("raw") # Pipelines will share the bucket for raw data
         
+        # Dev components may or may not connect to each other
+        # Most likely individual components will connect to components in the test cluster
         with Cluster("dev"):
 
             dev_staging = S3("staging")
@@ -33,7 +42,9 @@ with Diagram("AW Data Pipeline", filename = "aw_data_pipeline_diagram"):
             dev_processed_crawler = GlueCrawlers("crawler")
             dev_catalog = GlueDataCatalog("catalog")           
             dev_redshift = Redshift("Redshift")
-            
+        
+        # test workflow does not need to run continuously. 
+        # Components to be defined in CDK to be deployed/destroyed as needed to test dev components
         with Cluster("test"):
             
             test_staging = S3("staging")
@@ -45,7 +56,9 @@ with Diagram("AW Data Pipeline", filename = "aw_data_pipeline_diagram"):
             test_processed_crawler = GlueCrawlers("crawler")
             test_catalog = GlueDataCatalog("catalog")
             test_redshift = Redshift("Redshift")          
-            
+         
+        # prod workflow will run continuously
+        # dev components that get tested and approved will be merged into prod workflow
         with Cluster("prod"):
             
             prod_staging = S3("staging")
