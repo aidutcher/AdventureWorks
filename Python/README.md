@@ -10,6 +10,7 @@ pandas
 ### File descriptions:
 
 - **diagram.py:** Using the diagrams package, creates an architecture diagram for dev, test, and prod AWS Glue Workflows, based on an [AWS blog post](https://aws.amazon.com/blogs/architecture/field-notes-how-to-build-an-aws-glue-workflow-using-the-aws-cloud-development-kit/) 
+![Architecture Diagram](https://raw.githubusercontent.com/aidutcher/AdventureWorks/develop/Python/aw_data_pipelin_diagram.png)
 
 - **database_snapshots_to_csv.py:** Queries every table in a MS SQL Server database, creates a directory for the results,
 and writes each table to a csv file in the directory.
